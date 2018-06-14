@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_sort_by_popular"
+        app:showAsAction="never"
+        android:title="@string/menuItemPopular"/>
+    <item
+        android:id="@+id/action_sort_by_highest_rated"
+        app:showAsAction="never"
+        android:title="@string/menuItemHighestRated"/>
+</menu>
