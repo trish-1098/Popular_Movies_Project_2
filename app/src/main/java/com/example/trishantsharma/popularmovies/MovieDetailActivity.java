@@ -9,12 +9,18 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.trishantsharma.popularmovies.movie_details_classes.MovieCastAdapter;
+import com.example.trishantsharma.popularmovies.movie_details_classes.MovieProductionCompaniesAdapter;
 import com.example.trishantsharma.popularmovies.utils.JSONUtils;
 import com.example.trishantsharma.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -33,8 +39,18 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     private TextView movieReleaseDateTextView;
     private TextView movieRatingTextView;
     private TextView movieGenresTextView;
+    private TextView movieViewerRatingTextView;
+    private TextView movieTaglineTextView;
+    private TextView movieRuntimeTextView;
+    private TextView movieOverviewTextView;
+    private TextView movieMoreDetailsLinkTextView;
     private ImageView movieCoverImageView;
     private ImageView moviePosterImageView;
+    private RecyclerView movieCastRecyclerView;
+    private RecyclerView movieProductionCompanyRecyclerView;
+
+    private MovieCastAdapter movieCastAdapter;
+    private MovieProductionCompaniesAdapter movieProductionCompaniesAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,14 +61,32 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         movieReleaseDateTextView = findViewById(R.id.release_date_tv);
         movieRatingTextView = findViewById(R.id.star_rating_tv);
         movieGenresTextView = findViewById(R.id.genre_tv);
+        movieViewerRatingTextView = findViewById(R.id.viewer_rating_tv);
+        movieTaglineTextView = findViewById(R.id.tagline_of_movie_tv);
+        movieRuntimeTextView = findViewById(R.id.runtime_tv);
+        movieOverviewTextView = findViewById(R.id.overview_tv);
+        movieMoreDetailsLinkTextView = findViewById(R.id.more_details_link_tv);
         movieCoverImageView = findViewById(R.id.movie_cover_iv);
         moviePosterImageView = findViewById(R.id.movie_poster_iv);
+        movieCastRecyclerView = findViewById(R.id.cast_recycler_view);
+        movieProductionCompanyRecyclerView = findViewById(R.id.production_company_recycler_view);
         //getActionBar().setDisplayHomeAsUpEnabled(true);
         if(!TextUtils.isEmpty(getIntent().getStringExtra("MOVIE_ID"))) {
             idOfMovieSelected = Integer.parseInt(getIntent().getStringExtra("MOVIE_ID"));
         }
         buildUrlForMovieDetailsAndCasts();
         getSupportLoaderManager().initLoader(LOADER_ID,null,this);
+        //Setting the Layout Manager to both RecyclerView
+        movieCastRecyclerView
+                .setLayoutManager(new LinearLayoutManager(this,
+                        LinearLayoutManager.HORIZONTAL,false));
+        movieProductionCompanyRecyclerView
+                .setLayoutManager(new LinearLayoutManager(this,
+                        LinearLayoutManager.HORIZONTAL,false));
+        movieCastAdapter = new MovieCastAdapter(this);
+        movieProductionCompaniesAdapter = new MovieProductionCompaniesAdapter(this);
+        movieCastRecyclerView.setAdapter(movieCastAdapter);
+        movieProductionCompanyRecyclerView.setAdapter(movieProductionCompaniesAdapter);
     }
     private void buildUrlForMovieDetailsAndCasts(){
         finalUrlForSelectedMovie = NetworkUtils.buildUrlForAParticularMovie(idOfMovieSelected);
@@ -70,6 +104,11 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         finalMovieObjectReceived = movieObjectAfterParsing;
         progressBarForMovieLoading.setVisibility(View.INVISIBLE);
         setAllDetailsOfMovie();
+        movieCastAdapter.setDataToArrayList(movieObjectAfterParsing.getCastNameAndImage());
+        //movieCastAdapter.notifyDataSetChanged();
+        movieProductionCompaniesAdapter
+                .setDataToArrayList(movieObjectAfterParsing.getProductionCompanies());
+        //movieProductionCompaniesAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -113,16 +152,30 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         for(int i = 0; i < finalMovieObjectReceived.getGenreOfMovie().size(); i++) {
             movieGenresTextView.append(finalMovieObjectReceived.getGenreOfMovie().get(i) + "\n");
         }
+        if(finalMovieObjectReceived.isAdult()) {
+            movieViewerRatingTextView.setText(getString(R.string.isAdultTrue));
+        } else {
+            movieViewerRatingTextView.setText(getString(R.string.isAdultFalse));
+        }
+        movieTaglineTextView.setText(finalMovieObjectReceived.getTagLineOfMovie());
+        movieRuntimeTextView
+                .setText(finalMovieObjectReceived.getRuntimeOfMovie() + " " +
+                        getString(R.string.runtime_unit));
+        movieOverviewTextView.setText(finalMovieObjectReceived.getOverviewDescription());
+        //Setting the link to the More Details TextView
+        String linkText = "<a href='" + finalMovieObjectReceived.getMoreDetailsWebsite() + "'>Click Here</a> if you want to know more !!";
+        movieMoreDetailsLinkTextView.setText(Html.fromHtml(linkText));
+        movieMoreDetailsLinkTextView.setMovementMethod(LinkMovementMethod.getInstance());
     }
     private Uri buildPicassoPosterLoadingUri(String pathToImage) {
-        Uri imageUri = null;
+        Uri imageUri;
         final String baseUri = "http://image.tmdb.org/t/p/";
         final String imageSize = "w342";
         imageUri = Uri.parse(baseUri + imageSize + "/" + pathToImage);
         return imageUri;
     }
     private Uri buildPicassoBackdropLoadingUri(String pathToImage) {
-        Uri imageUri = null;
+        Uri imageUri;
         final String baseUri = "http://image.tmdb.org/t/p/";
         final String imageSize = "w500";
         imageUri = Uri.parse(baseUri + imageSize + "/" + pathToImage);

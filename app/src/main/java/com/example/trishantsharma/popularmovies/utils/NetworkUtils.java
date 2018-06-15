@@ -1,7 +1,6 @@
 package com.example.trishantsharma.popularmovies.utils;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.example.trishantsharma.popularmovies.R;
 
@@ -13,19 +12,19 @@ import java.net.URL;
 import java.util.Scanner;
 
 public class NetworkUtils {
-    private final static String intitialURL = "http://api.themoviedb.org/3/movie/";
+    private final static String initialURL = "http://api.themoviedb.org/3/movie/";
     private final static String myApiKey = "3b7a0a58fb202e9d0026658add86034a";
     private final static String apiKeyString = "?api_key=";
     public static URL buildUrlWithSortOrderType(Context context, String sortOrderType) {
         URL finalURL = null;
         try {
             if(sortOrderType.equals(context.getResources().getString(R.string.menuItemPopular))) {
-                finalURL = new URL(intitialURL +
+                finalURL = new URL(initialURL +
                         context.getResources().getString(R.string.sortByPopular) +
                         apiKeyString + myApiKey);
             } else if(sortOrderType.equals(context.getResources()
                     .getString(R.string.menuItemHighestRated))){
-                finalURL = new URL(intitialURL +
+                finalURL = new URL(initialURL +
                         context.getResources().getString(R.string.sortByHighestRated) +
                         apiKeyString + myApiKey);
             }
@@ -42,7 +41,7 @@ public class NetworkUtils {
     public static URL buildUrlForAParticularMovie(int movieId){
         URL finalURL = null;
         try{
-            finalURL = new URL(intitialURL +
+            finalURL = new URL(initialURL +
                     movieId +
                     apiKeyString + myApiKey);
         } catch (MalformedURLException e) {
@@ -53,7 +52,7 @@ public class NetworkUtils {
     public static URL buildUrlForCastOfParticularMovie(Context context,int movieId) {
         URL finalURL = null;
         try {
-            finalURL = new URL(intitialURL +
+            finalURL = new URL(initialURL +
                     movieId +
                     "/" +
                     context.getResources().getString(R.string.castsOfParticularMovie) +

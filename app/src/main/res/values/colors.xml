@@ -3,5 +3,5 @@
     <color name="colorPrimary">#004d40</color>
     <color name="colorPrimaryDark">#00251a</color>
     <color name="colorAccent">#004d40</color>
-    <color name="movie_title_text_color">#39796b</color>
+    <color name="textview_common_color">#000000</color>
 </resources>

@@ -2,7 +2,6 @@ package com.example.trishantsharma.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -114,6 +113,7 @@ public class MainActivity extends AppCompatActivity
         loadingIndicator.setVisibility(View.GONE);
         appNameTextView.setVisibility(View.GONE);
         movieTitleAndPosterPathFinalList.addAll(movieTitleAndPosterPathList);
+        movieRecyclerAdapter.notifyDataSetChanged();
         //getWindow().getDecorView().setBackgroundColor(Color.WHITE);
     }
 

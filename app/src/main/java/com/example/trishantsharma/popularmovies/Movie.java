@@ -9,13 +9,14 @@ public class Movie {
     private ArrayList<String> genreOfMovie; //1
     private String moreDetailsWebsite; //1
     private String titleOfMovie; //1
-    private ArrayList<String[]> productionCompanies; //1
+    private ArrayList<String[]> productionCompanies = new ArrayList<>(); //1
     private String releaseDate; //1
     private String runtimeOfMovie; //1
     private String tagLineOfMovie; //1
     private double avgRating; //1
     private String languageOfMovie;
     private String pathToBackDropImage;
+    private ArrayList<String[]> castNameAndImage = new ArrayList<>(); //2
 
     public String getPathToBackDropImage() {
         return pathToBackDropImage;
@@ -32,8 +33,6 @@ public class Movie {
     public void setLanguageOfMovie(String languageOfMovie) {
         this.languageOfMovie = languageOfMovie;
     }
-
-    private ArrayList<String[]> castNameAndImage; //2
 
     public ArrayList<String> getGenreOfMovie() {
         return genreOfMovie;
@@ -103,7 +102,7 @@ public class Movie {
     }
 
     public void setProductionCompanies(ArrayList<String[]> productionCompanies) {
-        this.productionCompanies = productionCompanies;
+        this.productionCompanies.addAll(productionCompanies);
     }
 
     public String getReleaseDate() {

@@ -12,7 +12,6 @@ public class JSONUtils {
     private static ArrayList<String[]> movieTitleAndPosterList = new ArrayList<>();
     private static final String RESULT_JSON_ARRAY_STRING = "results";
     private static final String ID_JSON_OBJECT_STRING = "id";
-    private static final String TITLE_JSON_OBJECT_STRING = "title";
 
     private static final String POSTER_JSON_OBJECT_STRING = "poster_path";
 
@@ -42,9 +41,8 @@ public class JSONUtils {
             for (int i = 0; i < 19; i++) {
                 JSONObject particularMovie = allMoviesArray.optJSONObject(i);
                 String movieId = Integer.toString(particularMovie.optInt(ID_JSON_OBJECT_STRING));
-                String movieTitle = particularMovie.optString(TITLE_JSON_OBJECT_STRING);
                 String moviePoster = particularMovie.optString(POSTER_JSON_OBJECT_STRING);
-                String[] singleMovieTitleAndPosterArray = {movieId,movieTitle,moviePoster};
+                String[] singleMovieTitleAndPosterArray = {movieId,moviePoster};
                 movieTitleAndPosterList.add(singleMovieTitleAndPosterArray);
             }
             return movieTitleAndPosterList;

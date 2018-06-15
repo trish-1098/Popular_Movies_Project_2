@@ -13,8 +13,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdapter.MovieRecyclerAdapterViewHolder> {
@@ -32,7 +30,7 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdap
         //this.movieTitleAndPosterList.addAll(movieTitleAndPosterList);
     }
     private Uri buildPicassoImageLoadingUrl(String posterPath){
-        Uri posterUri = null;
+        Uri posterUri;
         final String baseURL = "http://image.tmdb.org/t/p/";
         final String posterSize = "w342";
         posterUri = Uri.parse(baseURL + posterSize + "/" + posterPath);
@@ -50,11 +48,9 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdap
     @Override
     public void onBindViewHolder(@NonNull MovieRecyclerAdapterViewHolder holder, int position) {
         //Add the first element of the array of the specified position of the ArrayList to the TxtVw
-        holder.movieTitleTextView.setText(movieTitleAndPosterList.get(position)[1]);
-        if(movieTitleAndPosterList.get(position)[1]!=null &&
-                !TextUtils.isEmpty(movieTitleAndPosterList.get(position)[2])){
+        if(movieTitleAndPosterList.get(position)[1]!=null){
             Picasso.get()
-                    .load(buildPicassoImageLoadingUrl(movieTitleAndPosterList.get(position)[2]))
+                    .load(buildPicassoImageLoadingUrl(movieTitleAndPosterList.get(position)[1]))
                     .into(holder.movieImageView);
         }
     }
@@ -67,11 +63,9 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdap
 
     class MovieRecyclerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final ImageView movieImageView;
-        final TextView movieTitleTextView;
         MovieRecyclerAdapterViewHolder(View view){
             super(view);
             movieImageView = view.findViewById(R.id.movie_poster_iv);
-            movieTitleTextView = view.findViewById(R.id.movie_title_tv);
             view.setOnClickListener(this);
         }
         @Override

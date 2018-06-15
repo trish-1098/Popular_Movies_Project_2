@@ -5,4 +5,13 @@
     <string name="menuItemPopular">Popular</string>
     <string name="menuItemHighestRated">Top Rated</string>
     <string name="castsOfParticularMovie">casts</string>
+    <string name="contentDescriptionOfBackdropImage">Represents the cover image of movie</string>
+    <string name="contentDescriptionOfPosterImage">Represents the poster image of the movie</string>
+    <string name="isAdultTrue">A</string>
+    <string name="isAdultFalse">UA</string>
+    <string name="runtime_unit"> minutes</string>
+    <string name="viewer_rating_label">Viewer Rating: </string>
+    <string name="cast_label">Movie Cast</string>
+    <string name="production_company_label">Production Companies</string>
+    <string name="overview_label">Overview</string>
 </resources>

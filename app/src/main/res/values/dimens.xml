@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="movie_title_size">16sp</dimen>
+    <dimen name="movie_title_size">20sp</dimen>
     <dimen name="padding_general">16dp</dimen>
     <dimen name="app_name_size">32sp</dimen>
+    <dimen name="castAndProdCompTitleSize">16sp</dimen>
 </resources>
