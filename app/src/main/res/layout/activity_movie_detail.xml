@@ -12,7 +12,7 @@
     <ImageView
         android:id="@+id/movie_cover_iv"
         android:layout_width="match_parent"
-        android:layout_height="238dp"
+        android:layout_height="235dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -254,7 +254,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/overview_tv"
         app:layout_constraintTop_toBottomOf="@+id/overview_tv"
-        android:autoLink="web"
         android:textColor="@color/textview_common_color"/>
 
     <ImageView
@@ -286,13 +285,15 @@
 
     <TextView
         android:id="@+id/cast_label_tv"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="4dp"
         tools:text="Cast Label Here"
         android:text="@string/cast_label"
+        android:textSize="@dimen/movie_title_size"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/more_details_link_tv"
@@ -315,19 +316,21 @@
 
     <TextView
         android:id="@+id/production_companies_label_tv"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="8dp"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.083"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cast_recycler_view"
         tools:text="Production Companies Label Here"
         android:text="@string/production_company_label"
-        android:textColor="@color/textview_common_color"/>
+        android:textColor="@color/textview_common_color"
+        android:textSize="@dimen/movie_title_size" />
     <android.support.v7.widget.RecyclerView
             android:id="@+id/production_company_recycler_view"
             android:layout_width="wrap_content"
@@ -341,11 +344,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/production_companies_label_tv" />
 
+    <ImageView
+        android:id="@+id/no_internet_image_for_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cast_label_tv"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/no_internet_access" />
+
 
 </android.support.constraint.ConstraintLayout>
 </ScrollView>
-<!-- TODO(1) Design the appropriate layout for the movie -->
-<!-- TODO(2) Use the material design guidelines if possible -->
-<!-- TODO(3) Make it as beautiful as possible with your own imagination -->
-<!-- TODO(4) Use the appropriate String values through strings.xml -->
-<!-- TODO(5) For others populate the labels -->

@@ -1,6 +1,9 @@
 package com.example.trishantsharma.popularmovies.utils;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.v4.net.ConnectivityManagerCompat;
 
 import com.example.trishantsharma.popularmovies.R;
 
@@ -81,5 +84,11 @@ public class NetworkUtils {
             e.printStackTrace();
         }
         return null;
+    }
+    public static boolean isConnectionAvailable(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo currentNetStatus = cm.getActiveNetworkInfo();
+        return currentNetStatus != null && currentNetStatus.isConnectedOrConnecting();
     }
 }

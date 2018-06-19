@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@drawable/movie_title_gradient">
+    android:background="@drawable/movie_title_gradient"
+    tools:context=".MainActivity">
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -56,7 +56,42 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/no_internet_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/no_internet_access" />
+
+    <TextView
+        android:id="@+id/no_internet_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="8dp"
+        android:padding="8dp"
+        android:gravity="center"
+        android:text="@string/no_internet_text"
+        android:textAllCaps="true"
+        android:textColor="@color/textview_common_color"
+        android:textSize="@dimen/movie_title_size"
+        android:textStyle="bold|italic"
+        android:maxEms="20"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/no_internet_image"
+        app:layout_constraintVertical_bias="1.0" />
 </android.support.constraint.ConstraintLayout>
-<!-- TODO(1) Correct the starting layout if possible -->
-<!-- TODO(2) Add a background image till loading and then make it disappear after loading -->
+<!-- TODO(1) Add a background image till loading and then make it disappear after loading -->
 <!-- Do above only if possible -->

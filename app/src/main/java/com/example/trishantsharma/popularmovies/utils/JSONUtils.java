@@ -137,5 +137,3 @@ public class JSONUtils {
         return null;
     }
 }
-//TODO(1) Make the method for parsing a particular movie JSON Object
-//TODO(2) Return the correct Movie object after adding all the details required

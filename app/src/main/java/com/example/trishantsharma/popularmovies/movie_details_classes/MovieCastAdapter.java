@@ -46,28 +46,15 @@ public class MovieCastAdapter extends RecyclerView.Adapter<MovieCastAdapter.Movi
     public void onBindViewHolder(@NonNull MovieCastViewHolder holder, int position) {
         holder.castCharacterNameTextView.setText(finalCastAndImageList.get(position)[0]);
         holder.castRealNameTextView.setText(finalCastAndImageList.get(position)[1]);
-        final AtomicBoolean imageLoaded = new AtomicBoolean();
+        InputStream inputstream = context.getResources().openRawResource(R.raw.no_image_available);
+
+        Bitmap bitmap = BitmapFactory.decodeStream(inputstream);
+
+        Drawable drawable = new BitmapDrawable(context.getResources(),bitmap);
         Picasso.get()
                 .load(buildUriForPicassoCastImage(finalCastAndImageList.get(position)[2]))
-                .into(holder.castImageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        imageLoaded.set(true);
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        imageLoaded.set(false);
-                    }
-                });
-        if(!imageLoaded.get()) {
-            InputStream inputstream = context.getResources().openRawResource(R.raw.no_image_available);
-
-            Bitmap bitmap = BitmapFactory.decodeStream(inputstream);
-
-            Drawable drawable = new BitmapDrawable(context.getResources(),bitmap);
-            holder.castImageView.setImageDrawable(drawable);
-        }
+                .error(drawable)
+                .into(holder.castImageView);
     }
 
     @Override

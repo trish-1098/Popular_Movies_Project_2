@@ -74,6 +74,9 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdap
         }
     }
     public void setMovieTitleAndPosterList(ArrayList<String[]> movieTitleAndPosterList){
+        if(!this.movieTitleAndPosterList.isEmpty()) {
+            this.movieTitleAndPosterList.clear();
+        }
         this.movieTitleAndPosterList.addAll(movieTitleAndPosterList);
         notifyDataSetChanged();
     }

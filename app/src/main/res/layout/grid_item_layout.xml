@@ -27,5 +27,3 @@
         android:background="@drawable/movie_title_gradient"
         android:textColor="@color/textview_common_color"/> -->
 </android.support.constraint.ConstraintLayout>
-<!-- TODO(1) Correct the layout(if possible) -->
-<!-- TODO(2) Correct the TextView cutting using ellipsize -->
