@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.trishantsharma.popularmovies.R;
+import com.example.trishantsharma.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -52,7 +53,7 @@ public class MovieCastAdapter extends RecyclerView.Adapter<MovieCastAdapter.Movi
 
         Drawable drawable = new BitmapDrawable(context.getResources(),bitmap);
         Picasso.get()
-                .load(buildUriForPicassoCastImage(finalCastAndImageList.get(position)[2]))
+                .load(NetworkUtils.buildUriForPicassoImage(finalCastAndImageList.get(position)[2]))
                 .error(drawable)
                 .into(holder.castImageView);
     }
@@ -78,12 +79,5 @@ public class MovieCastAdapter extends RecyclerView.Adapter<MovieCastAdapter.Movi
     public void setDataToArrayList(ArrayList<String[]> receivedCastAndImageArrayList) {
         this.finalCastAndImageList = receivedCastAndImageArrayList;
         notifyDataSetChanged();
-    }
-    private Uri buildUriForPicassoCastImage(String pathToImage) {
-        Uri finalUri;
-        final String baseUri = "http://image.tmdb.org/t/p/";
-        final String posterSize = "w342";
-        finalUri = Uri.parse(baseUri + posterSize + "/" + pathToImage);
-        return finalUri;
     }
 }

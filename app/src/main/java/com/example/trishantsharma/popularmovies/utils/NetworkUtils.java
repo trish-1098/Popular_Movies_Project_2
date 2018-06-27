@@ -3,7 +3,8 @@ package com.example.trishantsharma.popularmovies.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v4.net.ConnectivityManagerCompat;
+import android.net.Uri;
+import android.text.TextUtils;
 
 import com.example.trishantsharma.popularmovies.R;
 
@@ -14,22 +15,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+
 public class NetworkUtils {
-    private final static String initialURL = "http://api.themoviedb.org/3/movie/";
-    private final static String myApiKey = "3b7a0a58fb202e9d0026658add86034a";
-    private final static String apiKeyString = "?api_key=";
     public static URL buildUrlWithSortOrderType(Context context, String sortOrderType) {
         URL finalURL = null;
         try {
             if(sortOrderType.equals(context.getResources().getString(R.string.menuItemPopular))) {
-                finalURL = new URL(initialURL +
+                finalURL = new URL(ConstantUtils.initialURL +
                         context.getResources().getString(R.string.sortByPopular) +
-                        apiKeyString + myApiKey);
+                        ConstantUtils.apiKeyString + ConstantUtils.myApiKey);
             } else if(sortOrderType.equals(context.getResources()
                     .getString(R.string.menuItemHighestRated))){
-                finalURL = new URL(initialURL +
+                finalURL = new URL(ConstantUtils.initialURL +
                         context.getResources().getString(R.string.sortByHighestRated) +
-                        apiKeyString + myApiKey);
+                        ConstantUtils.apiKeyString + ConstantUtils.myApiKey);
             }
             else {
                 throw new IllegalArgumentException("Wrong Sort order: " + sortOrderType);
@@ -44,9 +43,9 @@ public class NetworkUtils {
     public static URL buildUrlForAParticularMovie(int movieId){
         URL finalURL = null;
         try{
-            finalURL = new URL(initialURL +
+            finalURL = new URL(ConstantUtils.initialURL +
                     movieId +
-                    apiKeyString + myApiKey);
+                    ConstantUtils.apiKeyString + ConstantUtils.myApiKey);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -55,11 +54,11 @@ public class NetworkUtils {
     public static URL buildUrlForCastOfParticularMovie(Context context,int movieId) {
         URL finalURL = null;
         try {
-            finalURL = new URL(initialURL +
+            finalURL = new URL(ConstantUtils.initialURL +
                     movieId +
                     "/" +
                     context.getResources().getString(R.string.castsOfParticularMovie) +
-                    apiKeyString + myApiKey);
+                    ConstantUtils.apiKeyString + ConstantUtils.myApiKey);
         } catch (MalformedURLException e){
             e.printStackTrace();
         }
@@ -90,5 +89,12 @@ public class NetworkUtils {
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo currentNetStatus = cm.getActiveNetworkInfo();
         return currentNetStatus != null && currentNetStatus.isConnectedOrConnecting();
+    }
+    public static Uri buildUriForPicassoImage(String pathToImage) {
+        if(!TextUtils.isEmpty(pathToImage)) {
+            return Uri.parse(ConstantUtils.baseUrlForPicassoImage +
+                            ConstantUtils.defaultLoadedImageSize + "/" + pathToImage);
+        }
+        return null;
     }
 }

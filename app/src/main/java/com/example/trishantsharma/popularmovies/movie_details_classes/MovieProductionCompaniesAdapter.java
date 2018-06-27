@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.trishantsharma.popularmovies.R;
+import com.example.trishantsharma.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -45,28 +46,16 @@ public class MovieProductionCompaniesAdapter extends
     @Override
     public void onBindViewHolder(@NonNull MovieProductionCompaniesViewHolder holder, int position) {
         holder.productionCompanyNameTextView.setText(finalProductionCompaniesList.get(position)[0]);
-        final AtomicBoolean imageLoaded = new AtomicBoolean();
+        InputStream inputstream = context.getResources().openRawResource(R.raw.no_image_available);
+
+        Bitmap bitmap = BitmapFactory.decodeStream(inputstream);
+
+        Drawable drawable = new BitmapDrawable(context.getResources(),bitmap);
         Picasso.get()
-                .load(buildUriForPicassoCastImage(finalProductionCompaniesList.get(position)[1]))
-                .into(holder.productionCompanyImageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        imageLoaded.set(true);
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        imageLoaded.set(false);
-                    }
-                });
-        if(!imageLoaded.get()) {
-            InputStream inputstream = context.getResources().openRawResource(R.raw.no_image_available);
-
-            Bitmap bitmap = BitmapFactory.decodeStream(inputstream);
-
-            Drawable drawable = new BitmapDrawable(context.getResources(),bitmap);
-            holder.productionCompanyImageView.setImageDrawable(drawable);
-        }
+                .load(NetworkUtils
+                        .buildUriForPicassoImage(finalProductionCompaniesList.get(position)[1]))
+                .error(drawable)
+                .into(holder.productionCompanyImageView);
     }
 
     @Override
@@ -88,12 +77,5 @@ public class MovieProductionCompaniesAdapter extends
     public void setDataToArrayList(ArrayList<String[]> receivedProductionCompaniesList) {
         finalProductionCompaniesList.addAll(receivedProductionCompaniesList);
         notifyDataSetChanged();
-    }
-    private Uri buildUriForPicassoCastImage(String pathToImage) {
-        Uri finalUri;
-        final String baseUri = "http://image.tmdb.org/t/p/";
-        final String posterSize = "w342";
-        finalUri = Uri.parse(baseUri + posterSize + "/" + pathToImage);
-        return finalUri;
     }
 }

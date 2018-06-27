@@ -1,10 +1,14 @@
 package com.example.trishantsharma.popularmovies;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -14,9 +18,12 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.trishantsharma.popularmovies.movie_details_classes.MovieCastAdapter;
@@ -24,6 +31,7 @@ import com.example.trishantsharma.popularmovies.movie_details_classes.MovieProdu
 import com.example.trishantsharma.popularmovies.utils.JSONUtils;
 import com.example.trishantsharma.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.net.URL;
 import butterknife.BindView;
@@ -86,6 +94,8 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     TextView castLabel;
     @BindView(R.id.production_companies_label_tv)
     TextView productionCompaniesLabel;
+    @BindView(R.id.detail_root_view)
+    ScrollView movieDetailRootView;
 
     private MovieCastAdapter movieCastAdapter;
     private MovieProductionCompaniesAdapter movieProductionCompaniesAdapter;
@@ -94,23 +104,6 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
-//        progressBarForMovieLoading = findViewById(R.id.progress_for_selected_movie_loading);
-//        movieTitleTextView = findViewById(R.id.movie_detail_title_tv);
-//        movieLanguageTextView = findViewById(R.id.language_detail_tv);
-//        movieReleaseDateTextView = findViewById(R.id.release_date_tv);
-//        movieRatingTextView = findViewById(R.id.star_rating_tv);
-//        movieGenresTextView = findViewById(R.id.genre_tv);
-//        movieViewerRatingTextView = findViewById(R.id.viewer_rating_tv);
-//        movieTaglineTextView = findViewById(R.id.tagline_of_movie_tv);
-//        movieRuntimeTextView = findViewById(R.id.runtime_tv);
-//        movieOverviewTextView = findViewById(R.id.overview_tv);
-//        movieMoreDetailsLinkTextView = findViewById(R.id.more_details_link_tv);
-//        movieCoverImageView = findViewById(R.id.movie_cover_iv);
-//        moviePosterImageView = findViewById(R.id.movie_poster_iv);
-//        movieCastRecyclerView = findViewById(R.id.cast_recycler_view);
-//        movieProductionCompanyRecyclerView = findViewById(R.id.production_company_recycler_view);
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if(!TextUtils.isEmpty(getIntent().getStringExtra("MOVIE_ID"))) {
             idOfMovieSelected = Integer.parseInt(getIntent().getStringExtra("MOVIE_ID"));
         }
@@ -163,6 +156,22 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         finalUrlForSelectedMovieCast =
                 NetworkUtils.buildUrlForCastOfParticularMovie(this,idOfMovieSelected);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.homeAsUp:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @NonNull
     @Override
     public Loader<Movie> onCreateLoader(int id, @Nullable Bundle args) {
@@ -215,6 +224,23 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         Picasso.get()
                 .load(buildPicassoPosterLoadingUri(finalMovieObjectReceived.getPathTooPoster()))
                 .into(moviePosterImageView);
+        /*Picasso.get().load(buildPicassoPosterLoadingUri(finalMovieObjectReceived.getPathTooPoster())).into(new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                movieDetailRootView.setBackground(new BitmapDrawable(getResources(),bitmap));
+            }
+
+            @Override
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                movieDetailRootView
+                        .setBackgroundColor(getResources().getColor(R.color.no_internet_background));
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        });*/
         movieTitleTextView.setText(finalMovieObjectReceived.getTitleOfMovie());
         movieLanguageTextView.setText(finalMovieObjectReceived.getLanguageOfMovie());
         movieReleaseDateTextView.setText(finalMovieObjectReceived.getReleaseDate());
@@ -253,4 +279,3 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     }
 }
 //TODO(1) Handle lifecycle errors where the genres appear two times
-//TODO(2)

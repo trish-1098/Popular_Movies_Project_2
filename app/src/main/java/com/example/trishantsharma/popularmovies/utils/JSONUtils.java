@@ -35,6 +35,7 @@ public class JSONUtils {
     private static final String CHARACTER_POSTER_JSON_OBJECT_STRING = "profile_path";
 
     public static ArrayList<String[]> parseMovieJSON(String jsonReceived){
+        movieTitleAndPosterList.clear();
         try {
             JSONObject movieObject = new JSONObject(jsonReceived);
             JSONArray allMoviesArray = movieObject.getJSONArray(RESULT_JSON_ARRAY_STRING);
@@ -52,6 +53,7 @@ public class JSONUtils {
         return null;
     }
     public static Movie parseSelectedMovieAndCast(String selectedMovieJSON,String selectedMovieCastJSON){
+        movieTitleAndPosterList.clear();
         Movie selectedMovieDetailsObject = new Movie();
         try {
             JSONObject selectedMovieJSONObject = new JSONObject(selectedMovieJSON);

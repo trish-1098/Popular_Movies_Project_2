@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_sort_by_popular"
         app:showAsAction="never"
-        android:title="@string/menuItemPopular"/>
+        android:title="@string/menuItemPopular" />
     <item
         android:id="@+id/action_sort_by_highest_rated"
         app:showAsAction="never"

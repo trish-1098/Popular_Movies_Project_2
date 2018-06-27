@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.trishantsharma.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -23,18 +24,10 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdap
         void onClickMovie(int positionClicked);
     }
     private ArrayList<String[]> movieTitleAndPosterList = new ArrayList<>();
-    public MovieRecyclerAdapter(@NonNull Context context,
+    MovieRecyclerAdapter(@NonNull Context context,
                                 MovieGridOnClickHandler movieGridOnClickHandler) {
         this.context = context;
         this.movieGridOnClickHandler = movieGridOnClickHandler;
-        //this.movieTitleAndPosterList.addAll(movieTitleAndPosterList);
-    }
-    private Uri buildPicassoImageLoadingUrl(String posterPath){
-        Uri posterUri;
-        final String baseURL = "http://image.tmdb.org/t/p/";
-        final String posterSize = "w342";
-        posterUri = Uri.parse(baseURL + posterSize + "/" + posterPath);
-        return posterUri;
     }
     @NonNull
     @Override
@@ -50,7 +43,8 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdap
         //Add the first element of the array of the specified position of the ArrayList to the TxtVw
         if(movieTitleAndPosterList.get(position)[1]!=null){
             Picasso.get()
-                    .load(buildPicassoImageLoadingUrl(movieTitleAndPosterList.get(position)[1]))
+                    .load(NetworkUtils
+                            .buildUriForPicassoImage(movieTitleAndPosterList.get(position)[1]))
                     .into(holder.movieImageView);
         }
     }

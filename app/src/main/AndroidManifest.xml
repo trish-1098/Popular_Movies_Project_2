@@ -18,7 +18,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MovieDetailActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleTop"/>
     </application>
 
 </manifest>
