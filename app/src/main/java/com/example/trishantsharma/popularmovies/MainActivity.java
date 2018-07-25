@@ -42,8 +42,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
         implements MovieRecyclerAdapter.MovieGridOnClickHandler,
-        SharedPreferences.OnSharedPreferenceChangeListener,
-        FavouriteMovieAdapter.FavMovieClickListener {
+        SharedPreferences.OnSharedPreferenceChangeListener {
     @BindView(R.id.movie_grid_recycler_view)
     RecyclerView movieGridRecyclerView;
     @BindView(R.id.progress_bar_for_movie_loading)
@@ -65,7 +64,6 @@ public class MainActivity extends AppCompatActivity
     private int numOfColumnsAccordingToOrientation;
     private List<FavouriteMovieModel> listOfFavMovies;
     private FavouriteMovieAdapter favouriteMovieAdapter;
-    private Observer<List<FavouriteMovieModel>> favMovieModelListObserver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +111,7 @@ public class MainActivity extends AppCompatActivity
             displayNoInternetScreen();
             setupFavMovieView();
         }
-        favouriteMovieAdapter = new FavouriteMovieAdapter(this,this);
+        favouriteMovieAdapter = new FavouriteMovieAdapter(this);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
             getSupportActionBar()
@@ -246,17 +244,6 @@ public class MainActivity extends AppCompatActivity
             Log.d("New Data Changed", "<========== Changed and Received ===========>");
         }
     }
-
-    @Override
-    public void onFavMovieClicked(int positionClicked) {
-        Intent intentToMovieDetail = new Intent(MainActivity.this,MovieDetailActivity.class);
-        Log.d("onFavClicked","<======= Yes ==========>");
-        if(listOfFavMovies != null) {
-            intentToMovieDetail.putExtra("MOVIE_ID",
-                    listOfFavMovies.get(positionClicked).getMovieId());
-            startActivity(intentToMovieDetail);
-        }
-    }
     private class FavMovieAsyncTask extends AsyncTask<Void,Void,List<FavouriteMovieModel>> {
         @Override
         protected List<FavouriteMovieModel> doInBackground(Void... voids) {
@@ -274,31 +261,4 @@ public class MainActivity extends AppCompatActivity
         }
     }
 }
-//TODO(A) Add the Favourite Movie Button option in the options menu
-//TODO(B) Then use the LiveData list received to populate the adapter for the recycler view
-//TODO(C) If the connection is not available then automatically show the favorite movies
-//TODO(D) Otherwise, create a new adapter for the favourite movies to show the fav movies or modify the existing
-//TODO(J) Finally design the CardView layouts for the MainScreen as well as the Trailers,Cast and Review
-//TODO(K) Implement it in the corresponding Adapters and finally test the app
-//TODO(L) Add the favourites button in the DetailsScreen and add the code to mark that movie as fav
-//TODO(M) Marking should save the data in the database and unmarking should delete that
-//TODO(N) The table used should be the fav_movie
-//TODO(O) Just show the appropriate details when no connection available or all details when connection is available
-//TODO(P) Download the user data using a background process like FirebaseJobDispatcher(if possible)
-//TODO(Q) Setup the scenerio where if there is no connection then the Favourite List will automatically be displayed
-//TODO(R) Add the Favourite section to the OptionsMenu
-//TODO -- Change to StaggeredGridLayout
-//TODO(S) Finally test the whole app and submit it
-
-//TODO(4) Create the CardView item for movie item in RecyclerView
-//TODO(5) Test the paging and make sure it is working properly
-//TODO(6) Setup the MovieDetail activity to get the results and show them
-//TODO(7) Add the button for favourite movie
-//TODO(8) Add the selected movie on a background thread to the database
-//TODO(9) And on again pressing it delete the movie from the database on a background thread
-//TODO(10) Setup the scenerio where if there is no connection then the Favourite List will automatically be displayed
-//TODO(11) Add another spinner item to the menu to display favourite movie List\
-//TODO(12) Query the same fav table for displaying in RecyclerView and in DetailActivity
-//TODO(5) Set all the dimensions in dimens.xml file
-
-//TODO IMPORTANT --> Fix the issue where tapping on a movie after changing the sort order crashes the app
+//TODO(1) Change the star to black when clicked on
