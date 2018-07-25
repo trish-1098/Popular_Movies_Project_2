@@ -6,4 +6,5 @@ public class ConstantUtils {
     public final static String initialURL = "http://api.themoviedb.org/3/movie/";
     public final static String myApiKey = "3b7a0a58fb202e9d0026658add86034a";
     public final static String apiKeyString = "?api_key=";
+    public final static String baseUrlForTrailerPicassoImage = "http://img.youtube.com/vi/";
 }

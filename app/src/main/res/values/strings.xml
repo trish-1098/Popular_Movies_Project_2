@@ -5,8 +5,8 @@
     <string name="menuItemPopular">Popular</string>
     <string name="menuItemHighestRated">Top Rated</string>
     <string name="castsOfParticularMovie">casts</string>
-    <string name="contentDescriptionOfBackdropImage">Represents the cover image of movie</string>
-    <string name="contentDescriptionOfPosterImage">Represents the poster image of the movie</string>
+    <string name="contentDescriptionOfBackdropImage">Represents the cover image of favouriteMovieModel</string>
+    <string name="contentDescriptionOfPosterImage">Represents the poster image of the favouriteMovieModel</string>
     <string name="isAdultTrue">A</string>
     <string name="isAdultFalse">UA</string>
     <string name="runtime_unit"> minutes</string>
@@ -16,4 +16,15 @@
     <string name="overview_label">Overview</string>
     <string name="no_internet_text">Oops !! Looks like you are not connected to the Internet
         !! \nPlease check your Internet Connection and try again !!</string>
+    <string name="pref_page_number">Page_Number</string>
+    <string name="pref_sort_type">Sort_Type</string>
+    <string name="fav_button_description">Mark As Favourite Button</string>
+    <string name="trailer_label">Trailers</string>
+    <string name="review_label">Movie Reviews</string>
+    <string name="deleted_fav_movie">Removed from Favourites</string>
+    <string name="added_fav_movie">Added to Favourites</string>
+    <string name="unable_to_delete_fav_movie">Unable to remove from Favourites</string>
+    <string name="unable_to_add_fav_movie">Unable to add favourite movie</string>
+    <string name="try_again">Please Try Again Later</string>
+    <string name="fav_movies">Favourites</string>
 </resources>

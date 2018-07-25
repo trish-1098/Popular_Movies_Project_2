@@ -315,36 +315,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cast_label_tv" />
 
-    <TextView
-        android:id="@+id/production_companies_label_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_common"
-        android:layout_marginRight="@dimen/margin_common"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="@dimen/margin_common"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.083"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cast_recycler_view"
-        tools:text="Production Companies Label Here"
-        android:text="@string/production_company_label"
-        android:textColor="@color/textview_common_color"
-        android:textSize="@dimen/movie_title_size" />
-    <android.support.v7.widget.RecyclerView
-            android:id="@+id/production_company_recycler_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_common"
-            android:layout_marginLeft="@dimen/margin_common"
-            android:layout_marginRight="@dimen/margin_common"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="@dimen/margin_common"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/production_companies_label_tv" />
-
     <ImageView
         android:id="@+id/no_internet_image_for_detail"
         android:layout_width="wrap_content"
@@ -357,6 +327,110 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/no_internet_access" />
 
+    <ImageButton
+        android:id="@+id/mark_as_fav_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_common"
+        android:layout_marginLeft="@dimen/margin_common"
+        android:layout_marginRight="@dimen/margin_common"
+        android:layout_marginStart="@dimen/margin_common"
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/movie_detail_title_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/movie_detail_title_tv"
+        app:layout_constraintTop_toBottomOf="@+id/movie_detail_title_tv"
+        app:srcCompat="@drawable/ic_star_border_black_24dp"
+        android:contentDescription="@string/fav_button_description"/>
 
+    <TextView
+        android:id="@+id/trailer_label_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/trailer_label"
+        android:layout_marginEnd="@dimen/margin_common"
+        android:layout_marginRight="@dimen/margin_common"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="@dimen/margin_common"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cast_recycler_view"
+        android:textColor="@color/textview_common_color"
+        android:textSize="@dimen/movie_title_size" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/trailer_recycler_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/trailer_label_tv"
+        android:layout_marginEnd="@dimen/margin_common"
+        android:layout_marginLeft="@dimen/margin_common"
+        android:layout_marginRight="@dimen/margin_common"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="@dimen/margin_common" />
+
+    <TextView
+        android:id="@+id/review_label_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/review_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/trailer_recycler_view"
+        android:layout_marginEnd="@dimen/margin_common"
+        android:layout_marginRight="@dimen/margin_common"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="@dimen/margin_common"
+        android:gravity="center"
+        android:textStyle="italic"
+        android:textColor="@color/textview_common_color"
+        android:textSize="@dimen/movie_title_size" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/review_recycler_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_label_tv"
+        android:layout_marginEnd="@dimen/margin_common"
+        android:layout_marginLeft="@dimen/margin_common"
+        android:layout_marginRight="@dimen/margin_common"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="@dimen/margin_common"/>
+
+    <TextView
+        android:id="@+id/production_companies_label_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_common"
+        android:layout_marginRight="@dimen/margin_common"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="@dimen/margin_common"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.083"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_recycler_view"
+        tools:text="Production Companies Label Here"
+        android:text="@string/production_company_label"
+        android:textColor="@color/textview_common_color"
+        android:textSize="@dimen/movie_title_size" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/production_company_recycler_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_common"
+        android:layout_marginLeft="@dimen/margin_common"
+        android:layout_marginRight="@dimen/margin_common"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="@dimen/margin_common"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/production_companies_label_tv" />
 </android.support.constraint.ConstraintLayout>
 </ScrollView>
+<!-- TODO(1) Add common styles to the styles.xml file -->

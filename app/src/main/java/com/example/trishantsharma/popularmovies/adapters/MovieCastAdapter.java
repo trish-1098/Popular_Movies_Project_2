@@ -1,11 +1,10 @@
-package com.example.trishantsharma.popularmovies.movie_details_classes;
+package com.example.trishantsharma.popularmovies.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,18 +14,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.trishantsharma.popularmovies.R;
-import com.example.trishantsharma.popularmovies.utils.NetworkUtils;
-import com.squareup.picasso.Callback;
+import com.example.trishantsharma.popularmovies.models.CastModel;
+import com.example.trishantsharma.popularmovies.networkdata.NetworkAndDatabaseUtils;
 import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MovieCastAdapter extends RecyclerView.Adapter<MovieCastAdapter.MovieCastViewHolder>{
 
     private Context context;
-    private ArrayList<String[]> finalCastAndImageList;
+    private ArrayList<CastModel> finalCastAndImageList;
 
     public MovieCastAdapter(Context context) {
         this.context = context;
@@ -45,15 +43,17 @@ public class MovieCastAdapter extends RecyclerView.Adapter<MovieCastAdapter.Movi
 
     @Override
     public void onBindViewHolder(@NonNull MovieCastViewHolder holder, int position) {
-        holder.castCharacterNameTextView.setText(finalCastAndImageList.get(position)[0]);
-        holder.castRealNameTextView.setText(finalCastAndImageList.get(position)[1]);
+        holder.castCharacterNameTextView.setText(finalCastAndImageList.get(position).getCharacter());
+        holder.castRealNameTextView.setText(finalCastAndImageList.get(position).getName());
         InputStream inputstream = context.getResources().openRawResource(R.raw.no_image_available);
 
         Bitmap bitmap = BitmapFactory.decodeStream(inputstream);
 
         Drawable drawable = new BitmapDrawable(context.getResources(),bitmap);
         Picasso.get()
-                .load(NetworkUtils.buildUriForPicassoImage(finalCastAndImageList.get(position)[2]))
+                .load(NetworkAndDatabaseUtils
+                        .buildUriForPicassoImage(finalCastAndImageList
+                                .get(position).getProfilePath()))
                 .error(drawable)
                 .into(holder.castImageView);
     }
@@ -76,7 +76,7 @@ public class MovieCastAdapter extends RecyclerView.Adapter<MovieCastAdapter.Movi
             castRealNameTextView = itemView.findViewById(R.id.cast_real_name_tv);
         }
     }
-    public void setDataToArrayList(ArrayList<String[]> receivedCastAndImageArrayList) {
+    public void setDataToArrayList(ArrayList<CastModel> receivedCastAndImageArrayList) {
         this.finalCastAndImageList = receivedCastAndImageArrayList;
         notifyDataSetChanged();
     }
