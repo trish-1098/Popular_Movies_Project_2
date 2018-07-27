@@ -10,7 +10,7 @@ import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.trishantsharma.popularmovies.FavouriteMovieModel;
+import com.example.trishantsharma.popularmovies.models.FavouriteMovieModel;
 import com.example.trishantsharma.popularmovies.models.MovieModel;
 
 @Database(entities = {MovieModel.class,FavouriteMovieModel.class},version = 1,exportSchema = false)
@@ -23,20 +23,12 @@ public abstract class MovieDatabase extends RoomDatabase {
     public static MovieDatabase getMovieDbInstance(Context context) {
         if(movieDbInstance == null) {
             synchronized (LOCK) {
-                Log.d("MovieDb","------>Initialised");
                 movieDbInstance = Room.databaseBuilder(context.getApplicationContext(),
                         MovieDatabase.class,DATABASE_NAME).build();
             }
         }
-        Log.d("MovieDb","------>Instance Returned");
         return movieDbInstance;
     }
     public abstract FavMovieDao getFavMovieDao();
     public abstract MovieDao getMovieDao();
-    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            database.execSQL("");
-        }
-    };
 }

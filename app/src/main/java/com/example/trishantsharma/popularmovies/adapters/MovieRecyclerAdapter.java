@@ -74,7 +74,8 @@ public class MovieRecyclerAdapter extends PagedListAdapter<MovieModel,MovieRecyc
         //Add the first element of the array of the specified position of the ArrayList to the TxtVw
         if(movieModel != null){
             Picasso.get()
-                    .load(NetworkAndDatabaseUtils.buildUriForPicassoImage(movieModel.getPosterPath()))
+                    .load(NetworkAndDatabaseUtils
+                            .buildUriForPicassoImage(movieModel.getPosterPath()))
                     .into(holder.movieImageView);
         } else {
             InputStream inputstream = context.getResources().openRawResource(R.raw.no_image_available);

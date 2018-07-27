@@ -23,14 +23,12 @@ public class MovieModelBoundaryCallback extends PagedList.BoundaryCallback<Movie
     public void onZeroItemsLoaded() {
         PrefUtils.resetPageNumber(context);
         requestAndSaveData(context,sortOrderType);
-        Log.d("Initial data loaded","<======Yes=========>");
     }
 
     @Override
     public void onItemAtEndLoaded(@NonNull MovieModel itemAtEnd) {
         PrefUtils.incrementPageNumber(context);
         requestAndSaveData(context,sortOrderType);
-        Log.d("New Data Loaded","<=====Yes=====>");
     }
     private static void requestAndSaveData(Context context,String sortOrderType) {
         if(NetworkAndDatabaseUtils.isConnectionAvailable(context)) {

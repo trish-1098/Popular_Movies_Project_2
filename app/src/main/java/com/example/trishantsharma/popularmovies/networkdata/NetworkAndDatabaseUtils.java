@@ -1,20 +1,14 @@
 package com.example.trishantsharma.popularmovies.networkdata;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.trishantsharma.popularmovies.FavouriteMovieModel;
-import com.example.trishantsharma.popularmovies.MainActivity;
-import com.example.trishantsharma.popularmovies.R;
+import com.example.trishantsharma.popularmovies.models.FavouriteMovieModel;
 import com.example.trishantsharma.popularmovies.containers.CastContainerModel;
 import com.example.trishantsharma.popularmovies.containers.MovieContainerModel;
 import com.example.trishantsharma.popularmovies.containers.ReviewContainer;
@@ -43,7 +37,6 @@ public class NetworkAndDatabaseUtils {
     private static List<ReviewModel> reviewModelFinalList = new ArrayList<>();
     private static List<CastModel> castModelFinalList = new ArrayList<>();
     private static List<FavouriteMovieModel> favouriteMovieModelList = new ArrayList<>();
-    private static boolean isInserted = false;
     public static boolean isConnectionAvailable(Context context) {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -59,14 +52,16 @@ public class NetworkAndDatabaseUtils {
     }
     public static Uri buildUriForTrailerPicassoImage(String keyOfImage) {
         if(!TextUtils.isEmpty(keyOfImage)) {
-            return Uri.parse(ConstantUtils.baseUrlForTrailerPicassoImage + keyOfImage + "/hqdefault.jpg");
+            return Uri.parse(ConstantUtils.baseUrlForTrailerPicassoImage +
+                    keyOfImage +
+                    ConstantUtils.defaultTrailerImageSize);
         }
         return null;
     }
     public static Uri buildPicassoBackdropLoadingUri(String pathToImage) {
         Uri imageUri;
-        final String baseUri = "http://image.tmdb.org/t/p/";
-        final String imageSize = "w500";
+        final String baseUri = ConstantUtils.baseUrlForPicassoImage;
+        final String imageSize = ConstantUtils.defaultBackdropSize;
         imageUri = Uri.parse(baseUri + imageSize + "/" + pathToImage);
         return imageUri;
     }
@@ -78,9 +73,6 @@ public class NetworkAndDatabaseUtils {
             public void onResponse(Call<MovieContainerModel> call, Response<MovieContainerModel> response) {
                 MovieContainerModel movieContainerModel = response.body();
                 List<MovieModel> moviesList = movieContainerModel.getResults();
-                for (MovieModel movieModel:moviesList) {
-                    Log.d("The movie received","<======At position " + movieModel.getOriginalTitle() + "======>");
-                }
                 addMovieDataInDatabase(moviesList,context);
             }
 
@@ -101,7 +93,6 @@ public class NetworkAndDatabaseUtils {
             public void run() {
                 for (MovieModel movieModel : moviesList) {
                     movieDatabase.getMovieDao().insertMovieData(movieModel);
-                    Log.d("Data inserted","<==== " + movieModel.getOriginalTitle() + " =====>");
                 }
             }
         });
@@ -139,7 +130,6 @@ public class NetworkAndDatabaseUtils {
             Response<ReviewContainer> reviewContainerResponse = reviewContainerCall.execute();
             Response<CastContainerModel> castContainerModelResponse = castContainerModelCall.execute();
             movieDetailModelFinal = movieModelResponse.body();
-            Log.d("Details ====>","<====== Back path : =========== " + movieDetailModelFinal.getBackdropPath() + "==========>");
             trailerModelFinalList = trailerContainerResponse.body().getResults();
             reviewModelFinalList = reviewContainerResponse.body().getResults();
             castModelFinalList = castContainerModelResponse.body().getCast();
@@ -151,9 +141,6 @@ public class NetworkAndDatabaseUtils {
         }
     }
     public static Object[] getAllMovieDetails() {
-//        if(!trailerModelFinalList.isEmpty()
-//                && !(reviewModelFinalList.isEmpty())
-//                && (!castModelFinalList.isEmpty())) {
         Object[] objects = new Object[4];
         objects[0] = movieDetailModelFinal;
         objects[1] = trailerModelFinalList;
@@ -174,7 +161,6 @@ public class NetworkAndDatabaseUtils {
         }
         if(isAFavMovie) {
             movieDatabase.getFavMovieDao().deleteParticularFavMovie(movieId);
-            Log.d("Delete Fav Movie","<======== Yes: Deleted ============>");
         } else {
             FavouriteMovieModel favouriteMovieModel =
                     new FavouriteMovieModel(movieDetailModel.getId(),
@@ -188,7 +174,6 @@ public class NetworkAndDatabaseUtils {
                             movieDetailModel.getOriginalLanguage(),
                             movieDetailModel.getPosterPath());
             movieDatabase.getFavMovieDao().insertFavMovie(favouriteMovieModel);
-            Log.d("Added to Fav ==>","<=========== Yes ==============>");
         }
         return isAFavMovie;
     }

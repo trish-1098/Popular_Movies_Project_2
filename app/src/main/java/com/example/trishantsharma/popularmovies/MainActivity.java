@@ -29,8 +29,10 @@ import android.widget.TextView;
 import com.example.trishantsharma.popularmovies.adapters.FavouriteMovieAdapter;
 import com.example.trishantsharma.popularmovies.adapters.MovieRecyclerAdapter;
 import com.example.trishantsharma.popularmovies.database.MovieDatabase;
+import com.example.trishantsharma.popularmovies.models.FavouriteMovieModel;
 import com.example.trishantsharma.popularmovies.models.MovieModel;
 import com.example.trishantsharma.popularmovies.networkdata.NetworkAndDatabaseUtils;
+import com.example.trishantsharma.popularmovies.utils.ConstantUtils;
 import com.example.trishantsharma.popularmovies.utils.PrefUtils;
 import com.example.trishantsharma.popularmovies.viewmodel.MovieViewModel;
 
@@ -42,13 +44,10 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
         implements MovieRecyclerAdapter.MovieGridOnClickHandler,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        FavouriteMovieAdapter.FavMovieClickListener {
     @BindView(R.id.movie_grid_recycler_view)
     RecyclerView movieGridRecyclerView;
-    @BindView(R.id.progress_bar_for_movie_loading)
-    ProgressBar loadingIndicator;
-    @BindView(R.id.app_name_tv)
-    TextView appNameTextView;
     private String sortByType;
     private MovieRecyclerAdapter movieRecyclerAdapter;
     @BindView(R.id.no_internet_image)
@@ -57,8 +56,10 @@ public class MainActivity extends AppCompatActivity
     TextView noInternetTextView;
     @BindView(R.id.main_root_view)
     ConstraintLayout mainRootView;
+    @BindView(R.id.fav_movie_recycler_view)
+    RecyclerView favMovieRecyclerView;
     private String SORT_BY_TYPE_STATE_KEY = "sort_key";
-    private LiveData<PagedList<MovieModel>> movieModelPagedList;
+    private static LiveData<PagedList<MovieModel>> movieModelPagedList;
     private MovieViewModel movieViewModel;
     private static SharedPreferences sharedPreferences;
     private int numOfColumnsAccordingToOrientation;
@@ -82,21 +83,43 @@ public class MainActivity extends AppCompatActivity
         }
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         ButterKnife.bind(this);
-        listOfFavMovies = new ArrayList<>();
-        if(NetworkAndDatabaseUtils.isConnectionAvailable(this)) {
-            displayLoadingScreen();
-            noInternetTextView.setVisibility(View.INVISIBLE);
-            noInternetImageView.setVisibility(View.INVISIBLE);
+        //listOfFavMovies = new ArrayList<>();
+        noInternetTextView.setVisibility(View.GONE);
+        noInternetImageView.setVisibility(View.GONE);
+        if(getIntent() != null && getIntent().hasExtra("REMOVED")) {
+            if(getIntent().getBooleanExtra("REMOVED",false)) {
+                setupFavMovieView();
+            }
+        }
+        else {
+            setupAllMoviesView();
+        }
+            favouriteMovieAdapter = new FavouriteMovieAdapter(this, this);
+            favMovieRecyclerView
+                    .setLayoutManager(new GridLayoutManager(this,
+                            numOfColumnsAccordingToOrientation, GridLayoutManager.VERTICAL,
+                            false));
+            favMovieRecyclerView.setAdapter(favouriteMovieAdapter);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null) {
+            getSupportActionBar()
+                    .setIcon(ContextCompat
+                            .getDrawable(this, R.drawable.ic_filter_list_white_24dp));
+        }
+    }
+    private void setupAllMoviesView() {
+        if (NetworkAndDatabaseUtils.isConnectionAvailable(this)) {
             NetworkAndDatabaseUtils.deleteAllPreviousMovies(this);
             //Assigning the GridLayout Manager with a spanCount of 2 and vertical orientation
+            favMovieRecyclerView.setVisibility(View.GONE);
             GridLayoutManager movieGridManager =
                     new GridLayoutManager(this, numOfColumnsAccordingToOrientation,
                             GridLayoutManager.VERTICAL, false);
             movieRecyclerAdapter = new MovieRecyclerAdapter();
-            movieRecyclerAdapter.setContextAndMovieGridListener(this,this);
+            movieRecyclerAdapter.setContextAndMovieGridListener(this, this);
             movieGridRecyclerView.setLayoutManager(movieGridManager);
             movieGridRecyclerView.setAdapter(movieRecyclerAdapter);
-            movieViewModel =  ViewModelProviders.of(this).get(MovieViewModel.class);
+            movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
             movieModelPagedList = movieViewModel.getMovieLiveData();
             movieModelPagedList.observe(this, new Observer<PagedList<MovieModel>>() {
                 @Override
@@ -105,21 +128,11 @@ public class MainActivity extends AppCompatActivity
                 }
             });
             movieGridRecyclerView.setVisibility(View.VISIBLE);
-            loadingIndicator.setVisibility(View.INVISIBLE);
-            appNameTextView.setVisibility(View.INVISIBLE);
         } else {
-            displayNoInternetScreen();
+            //displayNoInternetScreen();
             setupFavMovieView();
         }
-        favouriteMovieAdapter = new FavouriteMovieAdapter(this);
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
-            getSupportActionBar()
-                    .setIcon(ContextCompat
-                            .getDrawable(this, R.drawable.ic_filter_list_white_24dp));
-        }
     }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putCharSequence(SORT_BY_TYPE_STATE_KEY,sortByType);
@@ -132,19 +145,19 @@ public class MainActivity extends AppCompatActivity
         sortByType = (String) savedInstanceState.getCharSequence(SORT_BY_TYPE_STATE_KEY);
     }
 
-    private void displayNoInternetScreen() {
-        //Code to show a screen in case the user is not connected to is no Internet
-        movieGridRecyclerView.setVisibility(View.INVISIBLE);
-        loadingIndicator.setVisibility(View.INVISIBLE);
-        appNameTextView.setVisibility(View.INVISIBLE);
-        noInternetTextView.setVisibility(View.VISIBLE);
-        noInternetImageView.setVisibility(View.VISIBLE);
-        loadingIndicator.getRootView()
-                .setBackgroundColor(getResources().getColor(R.color.no_internet_background));
-    }
+//    private void displayNoInternetScreen() {
+//        //Code to show a screen in case the user is not connected to is no Internet
+//        movieGridRecyclerView.setVisibility(View.INVISIBLE);
+//        noInternetTextView.setVisibility(View.VISIBLE);
+//        noInternetImageView.setVisibility(View.VISIBLE);
+//        loadingIndicator.getRootView()
+//                .setBackgroundColor(getResources().getColor(R.color.no_internet_background));
+//    }
     private void setupFavMovieView() {
         new FavMovieAsyncTask().execute();
-        movieGridRecyclerView.setAdapter(favouriteMovieAdapter);
+        favMovieRecyclerView.setVisibility(View.VISIBLE);
+        movieGridRecyclerView.setVisibility(View.GONE);
+        //favMovieRecyclerView.setAdapter(favouriteMovieAdapter);
     }
     private void revokeFavMovieView() {
         if(NetworkAndDatabaseUtils.isConnectionAvailable(this)) {
@@ -157,17 +170,7 @@ public class MainActivity extends AppCompatActivity
                 movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
             }
             movieGridRecyclerView.setVisibility(View.VISIBLE);
-            loadingIndicator.setVisibility(View.INVISIBLE);
-            appNameTextView.setVisibility(View.INVISIBLE);
-        }
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if(!NetworkAndDatabaseUtils.isConnectionAvailable(this)) {
-            displayNoInternetScreen();
-        } else {
-            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+            favMovieRecyclerView.setVisibility(View.GONE);
         }
     }
 
@@ -175,6 +178,17 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        if(NetworkAndDatabaseUtils.isConnectionAvailable(this)) {
+            String temp = PrefUtils.getSortOrderType(this);
+            if (temp.equals(getString(R.string.sortByPopular))) {
+                getSupportActionBar().setTitle(getString(R.string.menuItemPopular));
+            } else if (temp.equals(getString(R.string.sortByHighestRated))) {
+                getSupportActionBar().setTitle(getString(R.string.menuItemHighestRated));
+            }
+        }
+        else {
+            getSupportActionBar().setTitle(getString(R.string.fav_movies));
+        }
     }
 
     @Override
@@ -193,57 +207,71 @@ public class MainActivity extends AppCompatActivity
         if(NetworkAndDatabaseUtils.isConnectionAvailable(this)) {
             switch (item.getItemId()) {
                 case R.id.action_sort_by_popular:
+                    if(movieViewModel == null) {
+                        movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+                        setupAllMoviesView();
+                    }
                     if (!sortByType.equals(getString(R.string.menuItemPopular))) {
                         if(favouriteMovieAdapter != null) {
                             revokeFavMovieView();
                         }
                         sortByType = this.getString(R.string.sortByPopular);
-                        Log.d("sort type","<======= " + sortByType + " =====>");
                         PrefUtils.changeSortOrderType(this,sortByType);
-                        Log.d("changed","<======= Yes =======>");
+                        setSpecificTitle(getString(R.string.menuItemPopular));
                    }
                     return true;
                 case R.id.action_sort_by_highest_rated:
+                    if(movieViewModel == null) {
+                        movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+                        setupAllMoviesView();
+                    }
                     if (!sortByType.equals(getString(R.string.menuItemHighestRated))) {
                         if(favouriteMovieAdapter != null) {
                             revokeFavMovieView();
                         }
                         sortByType = this.getString(R.string.sortByHighestRated);
                         PrefUtils.changeSortOrderType(this,sortByType);
+                        setSpecificTitle(getString(R.string.menuItemHighestRated));
                     }
                     return true;
                 case R.id.action_show_favourites:
                     setupFavMovieView();
+                    setSpecificTitle(getString(R.string.fav_movies));
             }
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private void displayLoadingScreen() {
-        movieGridRecyclerView.setVisibility(View.INVISIBLE);
-        loadingIndicator.setVisibility(View.VISIBLE);
-        appNameTextView.setVisibility(View.VISIBLE);
-        mainRootView.setBackground(getResources().getDrawable(R.drawable.loading_image));
+    private void setSpecificTitle(String specificTitle) {
+        getSupportActionBar().setTitle(specificTitle);
     }
     @Override
     public void onClickMovie(int positionClicked) {
         Intent intentToMovieDetail = new Intent(MainActivity.this,MovieDetailActivity.class);
         if(movieModelPagedList != null) {
-            intentToMovieDetail.putExtra("MOVIE_ID",
+            intentToMovieDetail.putExtra(ConstantUtils.intentToDetailExtraKey,
                     movieModelPagedList.getValue().get(positionClicked).getId());
+            intentToMovieDetail.putExtra(ConstantUtils.intentToDetailSourceCheckKey,false);
             startActivity(intentToMovieDetail);
         }
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.d("Inside pref changed ==>","<===== Listener Called -- Yes ============>");
         if(key.equals(getString(R.string.pref_sort_type))) {
             movieViewModel.setSortOrder(this);
             movieModelPagedList = movieViewModel.getMovieLiveData();
-            Log.d("New Data Changed", "<========== Changed and Received ===========>");
         }
     }
+
+    @Override
+    public void onFavClick(int positionClicked) {
+        Intent openDetails = new Intent(this, MovieDetailActivity.class);
+        openDetails.putExtra(ConstantUtils.intentToDetailExtraKey,
+                listOfFavMovies.get(positionClicked).getMovieId());
+        openDetails.putExtra(ConstantUtils.intentToDetailSourceCheckKey,true);
+        startActivity(openDetails);
+    }
+
     private class FavMovieAsyncTask extends AsyncTask<Void,Void,List<FavouriteMovieModel>> {
         @Override
         protected List<FavouriteMovieModel> doInBackground(Void... voids) {
@@ -257,8 +285,12 @@ public class MainActivity extends AppCompatActivity
         protected void onPostExecute(List<FavouriteMovieModel> favouriteMovieModels) {
             super.onPostExecute(favouriteMovieModels);
             listOfFavMovies = favouriteMovieModels;
-            favouriteMovieAdapter.setDataToFavList(listOfFavMovies);
+            if(listOfFavMovies.isEmpty()) {
+                noInternetImageView.setVisibility(View.VISIBLE);
+                noInternetTextView.setVisibility(View.VISIBLE);
+            } else {
+                favouriteMovieAdapter.setDataToFavList(listOfFavMovies);
+            }
         }
     }
 }
-//TODO(1) Change the star to black when clicked on

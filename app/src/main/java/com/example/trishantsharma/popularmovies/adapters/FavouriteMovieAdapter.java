@@ -1,7 +1,6 @@
 package com.example.trishantsharma.popularmovies.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -13,9 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.trishantsharma.popularmovies.FavouriteMovieModel;
-import com.example.trishantsharma.popularmovies.MainActivity;
-import com.example.trishantsharma.popularmovies.MovieDetailActivity;
+import com.example.trishantsharma.popularmovies.models.FavouriteMovieModel;
 import com.example.trishantsharma.popularmovies.R;
 import com.example.trishantsharma.popularmovies.networkdata.NetworkAndDatabaseUtils;
 import com.squareup.picasso.Callback;
@@ -29,9 +26,14 @@ import java.util.List;
 public class FavouriteMovieAdapter extends RecyclerView.Adapter<FavouriteMovieAdapter.FavouriteMovieViewHolder> {
     private Context context;
     private List<FavouriteMovieModel> favouriteMovieModelList;
-    public FavouriteMovieAdapter(Context context) {
+    public interface FavMovieClickListener {
+        void onFavClick(int positionClicked);
+    }
+    private FavMovieClickListener favMovieClickListener;
+    public FavouriteMovieAdapter(Context context,FavMovieClickListener favMovieClickListener) {
         this.context = context;
         favouriteMovieModelList = new ArrayList<>();
+        this.favMovieClickListener = favMovieClickListener;
     }
     @NonNull
     @Override
@@ -75,19 +77,18 @@ public class FavouriteMovieAdapter extends RecyclerView.Adapter<FavouriteMovieAd
         return favouriteMovieModelList.size();
     }
 
-    public class FavouriteMovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class FavouriteMovieViewHolder extends RecyclerView.ViewHolder {
+        //implements View.OnClickListener {
         final ImageView moviePosterView;
         public FavouriteMovieViewHolder(View itemView) {
             super(itemView);
             moviePosterView = itemView.findViewById(R.id.movie_poster_iv);
-        }
-
-        @Override
-        public void onClick(View v) {
-            Intent openDetails = new Intent(context, MovieDetailActivity.class);
-            openDetails.putExtra("MOVIE_ID",
-                    favouriteMovieModelList.get(getAdapterPosition()).getMovieId());
-            context.startActivity(openDetails);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    favMovieClickListener.onFavClick(getAdapterPosition());
+                }
+            });
         }
     }
     public void setDataToFavList(List<FavouriteMovieModel> favList) {

@@ -65,7 +65,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         return trailerArrayList.size();
     }
 
-    public class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class TrailerViewHolder extends RecyclerView.ViewHolder{
         final ImageView trailerImageView;
         final TextView trailerNameTextView;
 
@@ -73,11 +73,12 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
             super(itemView);
             trailerImageView = itemView.findViewById(R.id.trailer_image_iv);
             trailerNameTextView = itemView.findViewById(R.id.trailer_name_tv);
-        }
-
-        @Override
-        public void onClick(View v) {
-            onTrailerClickListener.onTrailerClick(getAdapterPosition());
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onTrailerClickListener.onTrailerClick(getAdapterPosition());
+                }
+            });
         }
     }
     public void setTrailerArrayList(ArrayList<TrailerModel> trailerArrayList) {

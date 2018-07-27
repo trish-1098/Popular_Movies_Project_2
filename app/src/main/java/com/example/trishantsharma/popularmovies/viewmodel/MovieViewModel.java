@@ -10,15 +10,12 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.trishantsharma.popularmovies.FavouriteMovieModel;
 import com.example.trishantsharma.popularmovies.R;
 import com.example.trishantsharma.popularmovies.database.MovieDatabase;
 import com.example.trishantsharma.popularmovies.database.MovieModelBoundaryCallback;
 import com.example.trishantsharma.popularmovies.models.MovieModel;
 import com.example.trishantsharma.popularmovies.networkdata.NetworkAndDatabaseUtils;
 import com.example.trishantsharma.popularmovies.utils.PrefUtils;
-
-import java.util.List;
 
 
 public class MovieViewModel extends AndroidViewModel{
@@ -32,7 +29,7 @@ public class MovieViewModel extends AndroidViewModel{
         config =
                 new PagedList.Config.Builder()
                         .setPageSize(3)
-                        .setEnablePlaceholders(false)
+                        .setEnablePlaceholders(true)
                         .build();
         sortOrderType = PrefUtils.getSortOrderType(application.getApplicationContext());
         movieModelBoundaryCallback =
@@ -63,6 +60,5 @@ public class MovieViewModel extends AndroidViewModel{
                         .getString(context.getString(R.string.pref_sort_type),
                                 context.getString(R.string.sortByPopular));
         movieModelBoundaryCallback.changeSortType(sortOrderType);
-        Log.d("Inside pref changed ==>","<=========== Yes ===========>");
     }
 }

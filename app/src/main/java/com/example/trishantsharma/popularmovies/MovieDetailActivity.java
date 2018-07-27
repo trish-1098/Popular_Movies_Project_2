@@ -1,6 +1,7 @@
 package com.example.trishantsharma.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -32,11 +33,13 @@ import com.example.trishantsharma.popularmovies.adapters.ReviewAdapter;
 import com.example.trishantsharma.popularmovies.adapters.TrailerAdapter;
 import com.example.trishantsharma.popularmovies.database.MovieDatabase;
 import com.example.trishantsharma.popularmovies.models.CastModel;
+import com.example.trishantsharma.popularmovies.models.FavouriteMovieModel;
 import com.example.trishantsharma.popularmovies.models.MovieDetailModel;
 import com.example.trishantsharma.popularmovies.models.ReviewModel;
 import com.example.trishantsharma.popularmovies.models.TrailerModel;
 import com.example.trishantsharma.popularmovies.networkdata.NetworkAndDatabaseUtils;
 import com.example.trishantsharma.popularmovies.utils.AppExecutors;
+import com.example.trishantsharma.popularmovies.utils.ConstantUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -116,7 +119,7 @@ public class MovieDetailActivity extends AppCompatActivity
     TextView trailerLabel;
     @BindView(R.id.review_label_tv)
     TextView reviewLabel;
-    private MovieDetailModel movieDetailModel;
+    private static MovieDetailModel movieDetailModel;
     private List<TrailerModel> trailerModelList;
     private List<ReviewModel> reviewModelList;
     private List<CastModel> castModelList;
@@ -124,6 +127,8 @@ public class MovieDetailActivity extends AppCompatActivity
     private MovieProductionCompaniesAdapter movieProductionCompaniesAdapter;
     private TrailerAdapter movieTrailerAdapter;
     private ReviewAdapter movieReviewAdapter;
+    boolean checkIsFromMainOrOptions; //true for Fav //false for Main
+    //TODO Fix star problem with the same intent solution
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,16 +137,14 @@ public class MovieDetailActivity extends AppCompatActivity
         context = MovieDetailActivity.this;
         if(getIntent().getIntExtra("MOVIE_ID",1) != 1) {
             idOfMovieSelected = getIntent().getIntExtra("MOVIE_ID",1);
-            Log.d("Id received==>","<======= " + idOfMovieSelected + " ========>");
             trailerModelList = new ArrayList<>();
             reviewModelList = new ArrayList<>();
             castModelList = new ArrayList<>();
+            checkIsFromMainOrOptions = getIntent().getBooleanExtra(ConstantUtils.intentToDetailSourceCheckKey, false);
         }
         if(NetworkAndDatabaseUtils.isConnectionAvailable(this)) {
             noInternetImageView.setVisibility(View.GONE);
-//            buildUrlForMovieDetailsAndCasts();
             getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-            //Setting the Layout Manager to both RecyclerView
             movieCastRecyclerView
                     .setLayoutManager(new LinearLayoutManager(this,
                             LinearLayoutManager.HORIZONTAL, false));
@@ -163,92 +166,15 @@ public class MovieDetailActivity extends AppCompatActivity
             movieReviewRecyclerView.setAdapter(movieReviewAdapter);
             movieProductionCompanyRecyclerView.setAdapter(movieProductionCompaniesAdapter);
         } else {
-            favouriteMovieModel =
-                    MovieDatabase.getMovieDbInstance(context)
-                            .getFavMovieDao()
-                            .getSelectedFavMovie(idOfMovieSelected);
-            if(favouriteMovieModel != null) {
-                setAllDetailsOfMovie();
-            }
+            new OfflineMovieLoad().execute();
             noInternetImageView.setVisibility(View.GONE);
-//            noInternetImageView.setVisibility(View.VISIBLE);
-//            progressBarForMovieLoading.setVisibility(View.GONE);
-//            movieTitleTextView.setVisibility(View.GONE);
-//            movieLanguageTextView.setVisibility(View.GONE);
-//            movieReleaseDateTextView.setVisibility(View.GONE);
-//            movieRatingTextView.setVisibility(View.GONE);
-//            movieGenresTextView.setVisibility(View.GONE);
-//            movieViewerRatingTextView.setVisibility(View.GONE);
-//            movieTaglineTextView.setVisibility(View.GONE);
-//            movieRuntimeTextView.setVisibility(View.GONE);
-//            movieOverviewTextView.setVisibility(View.GONE);
-//            movieMoreDetailsLinkTextView.setVisibility(View.GONE);
-//            movieOverviewTextView.setVisibility(View.GONE);
-//            movieCoverImageView.setVisibility(View.GONE);
-//            moviePosterImageView.setVisibility(View.GONE);
-//            movieCastRecyclerView.setVisibility(View.GONE);
-//            movieProductionCompanyRecyclerView.setVisibility(View.GONE);
-//            languageIcon.setVisibility(View.GONE);
-//            releaseDateIcon.setVisibility(View.GONE);
-//            runtimeIcon.setVisibility(View.GONE);
-//            genreIcon.setVisibility(View.GONE);
-//            ratingIcon.setVisibility(View.GONE);
-//            overviewLabel.setVisibility(View.GONE);
-//            viewerRatingLabel.setVisibility(View.GONE);
-//            castLabel.setVisibility(View.GONE);
-//            productionCompaniesLabel.setVisibility(View.GONE);
-//            trailerLabel.setVisibility(View.GONE);
-//            reviewLabel.setVisibility(View.GONE);
         }
         markAsFavouriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        aBoolean = NetworkAndDatabaseUtils
-//                                .addOrDeleteFavMovie(context,idOfMovieSelected,movieDetailModel);
-//                    }
-//                });
-                new FavMovieAsyncTask().execute(idOfMovieSelected);
-//                aBoolean = NetworkAndDatabaseUtils
-//                        .addOrDeleteFavMovie(context,idOfMovieSelected,movieDetailModel);
-//                if(aBoolean) {
-//                    Toast.makeText(context,
-//                            context.getString(R.string.deleted_fav_movie), Toast.LENGTH_LONG)
-//                            .show();
-//                } else {
-//                    Toast.makeText(context,
-//                            context.getString(R.string.added_fav_movie), Toast.LENGTH_SHORT)
-//                            .show();
-//                }
-//                if(movieDetailModel != null) {
-//                    NetworkAndDatabaseUtils.addOrDeleteFavMovie(context,idOfMovieSelected,movieDetailModel);
-//                } else {
-//                    Toast.makeText(context, getString(R.string.try_again), Toast.LENGTH_SHORT).show();
-//                }
+                new FavMovieAsyncTask().execute(context);
             }
         });
-    }
-    private class FavMovieAsyncTask extends AsyncTask<Integer,Void,Boolean> {
-        @Override
-        protected Boolean doInBackground(Integer... integers) {
-            return NetworkAndDatabaseUtils.addOrDeleteFavMovie(context,integers[0],movieDetailModel);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            if(aBoolean) {
-                Toast.makeText(context,
-                        context.getString(R.string.deleted_fav_movie), Toast.LENGTH_LONG)
-                        .show();
-            } else {
-                Toast.makeText(context,
-                        context.getString(R.string.added_fav_movie), Toast.LENGTH_SHORT)
-                        .show();
-            }
-            super.onPostExecute(aBoolean);
-        }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -285,20 +211,20 @@ public class MovieDetailActivity extends AppCompatActivity
         }
         setAllDetailsOfMovie();
         progressBarForMovieLoading.setVisibility(View.GONE);
-        Log.d("Inside onLoadFinished","<=========== Yes ============> ");
-        for (int i = 0; i < trailerModelList.size(); i++) {
-            Log.d("Trailer ==>","<====== " + trailerModelList.get(i).getName() + " ========>");
-        }
-        for (TrailerModel trailerModel: trailerModelList) {
-            Log.d("Trailer ==>","<====== " + trailerModel.getName() + " ========>");
-        }
-        for (ReviewModel reviewModel: reviewModelList) {
-            Log.d("Review ==>","<======= " + reviewModel.getAuthor() + "========>");
-        }
-        for(CastModel castModel: castModelList) {
-            Log.d("Cast ==>","<======= " + castModel.getName() + "=========>");
-        }
-        //setAllDetailsOfMovie();
+//        Log.d("Inside onLoadFinished","<=========== Yes ============> ");
+//        for (int i = 0; i < trailerModelList.size(); i++) {
+//            Log.d("Trailer ==>","<====== " + trailerModelList.get(i).getName() + " ========>");
+//        }
+//        for (TrailerModel trailerModel: trailerModelList) {
+//            Log.d("Trailer ==>","<====== " + trailerModel.getName() + " ========>");
+//        }
+//        for (ReviewModel reviewModel: reviewModelList) {
+//            Log.d("Review ==>","<======= " + reviewModel.getAuthor() + "========>");
+//        }
+//        for(CastModel castModel: castModelList) {
+//            Log.d("Cast ==>","<======= " + castModel.getName() + "=========>");
+//        }
+//        //setAllDetailsOfMovie();
     }
 
     @Override
@@ -307,12 +233,22 @@ public class MovieDetailActivity extends AppCompatActivity
 
     @Override
     public void onReviewClick(int positionClicked) {
+        if(reviewModelList != null) {
+            Intent openReviewWebsite = new Intent(Intent.ACTION_VIEW,Uri.parse(reviewModelList.get(positionClicked).getUrl()));
+            startActivity(openReviewWebsite);
+        }
         //TODO onReviewClick
     }
 
     @Override
     public void onTrailerClick(int positionClicked) {
-        //TODO onTrailerClick
+        Log.d("Trailer ==>","<====== Yes =========>");
+        if(trailerModelList != null) {
+            Intent openTrailerInYoutube =
+                    new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" +
+                            trailerModelList.get(positionClicked).getKey()));
+            startActivity(openTrailerInYoutube);
+        }
     }
 
     private static class MovieDetailLoader extends AsyncTaskLoader<Void>{
@@ -389,8 +325,61 @@ public class MovieDetailActivity extends AppCompatActivity
                 movieTaglineTextView.setText(favouriteMovieModel.getTagLineOfMovie());
                 movieOverviewTextView.setText(favouriteMovieModel.getOverviewDescription());
                 movieRuntimeTextView.setText(favouriteMovieModel.getRuntimeOfMovie());
+                trailerLabel.setVisibility(View.GONE);
+                movieTrailerRecyclerView.setVisibility(View.GONE);
+                reviewLabel.setVisibility(View.GONE);
+                movieReviewRecyclerView.setVisibility(View.GONE);
+                productionCompaniesLabel.setVisibility(View.GONE);
+                movieProductionCompanyRecyclerView.setVisibility(View.GONE);
+                progressBarForMovieLoading.setVisibility(View.GONE);
+                moviePosterImageView.setVisibility(View.INVISIBLE);
+                movieCoverImageView.setVisibility(View.INVISIBLE);
+                castLabel.setVisibility(View.GONE);
+                viewerRatingLabel.setVisibility(View.GONE);
+                genreIcon.setVisibility(View.INVISIBLE);
             }
         }
     }
+    private class OfflineMovieLoad extends AsyncTask<Void,Void,FavouriteMovieModel> {
+        @Override
+        protected void onPostExecute(FavouriteMovieModel favouriteMovieModelReturned) {
+            super.onPostExecute(favouriteMovieModel);
+            favouriteMovieModel = favouriteMovieModelReturned;
+            if(favouriteMovieModel != null) {
+                setAllDetailsOfMovie();
+            }
+        }
+
+        @Override
+        protected FavouriteMovieModel doInBackground(Void... voids) {
+            return MovieDatabase.getMovieDbInstance(context)
+                    .getFavMovieDao()
+                    .getSelectedFavMovie(idOfMovieSelected);
+        }
+    }
+    private class FavMovieAsyncTask extends AsyncTask<Context,Void,Boolean> {
+        @Override
+        protected Boolean doInBackground(Context... contexts) {
+            return NetworkAndDatabaseUtils.addOrDeleteFavMovie(contexts[0],idOfMovieSelected,movieDetailModel);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            if(aBoolean) {
+                Toast.makeText(context,
+                        context.getString(R.string.deleted_fav_movie), Toast.LENGTH_LONG)
+                        .show();
+                if(checkIsFromMainOrOptions) {
+                    Intent goBackToMainActivity = new Intent(MovieDetailActivity.this, MainActivity.class);
+                    goBackToMainActivity.putExtra("REMOVED", true);
+                    startActivity(goBackToMainActivity);
+                }
+            } else {
+                Toast.makeText(context,
+                        context.getString(R.string.added_fav_movie), Toast.LENGTH_SHORT)
+                        .show();
+            }
+            super.onPostExecute(aBoolean);
+        }
+    }
 }
-//TODO(1) Handle lifecycle errors where the genres appear two times

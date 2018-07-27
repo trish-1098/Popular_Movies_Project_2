@@ -14,8 +14,8 @@
     <string name="cast_label">Movie Cast</string>
     <string name="production_company_label">Production Companies</string>
     <string name="overview_label">Overview</string>
-    <string name="no_internet_text">Oops !! Looks like you are not connected to the Internet
-        !! \nPlease check your Internet Connection and try again !!</string>
+    <string name="no_internet_text">Looks like you do not have any favourite movies yet
+        !! Go ahead and mark some movies as favourites and find them here !!</string>
     <string name="pref_page_number">Page_Number</string>
     <string name="pref_sort_type">Sort_Type</string>
     <string name="fav_button_description">Mark As Favourite Button</string>

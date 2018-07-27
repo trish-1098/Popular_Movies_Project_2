@@ -49,18 +49,19 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         return reviewsArrayList.size();
     }
 
-    public class ReviewViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ReviewViewHolder extends RecyclerView.ViewHolder{
         final TextView reviewerNameTextView;
         final TextView reviewBodyTextView;
         public ReviewViewHolder(View itemView) {
             super(itemView);
             reviewerNameTextView = itemView.findViewById(R.id.reviewer_name_tv);
             reviewBodyTextView = itemView.findViewById(R.id.review_body_tv);
-        }
-
-        @Override
-        public void onClick(View v) {
-            onReviewClickListener.onReviewClick(getAdapterPosition());
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onReviewClickListener.onReviewClick(getAdapterPosition());
+                }
+            });
         }
     }
     public void setReviewsArrayList(ArrayList<ReviewModel> reviewsArrayList) {
